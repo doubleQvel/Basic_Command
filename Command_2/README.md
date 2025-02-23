@@ -10,9 +10,11 @@
 5. [mkdir](#pos5)
 6. [cat](#pos6)
 7. [echo](#pos7)
-8. [rm](#pos8)
-9. [rmdir](#pos9)
-10. [man](#pos10)
+8. [cp](#pos8)
+9. [mv](#pos9)
+10. [rm](#pos10)
+11. [rmdir](#pos11)
+12. [man](#pos12)
 
 <a id="pos1"></a>
 
@@ -279,6 +281,58 @@ Hello World.
 
 <a id="pos8"></a>
 
+## cp
+
+指定したファイルを複製します。
+
+```
+cp Basic_Command/Example/hello.txt　Basic_Command/Example/hello2.txt
+```
+
+<details><summary>実行結果</summary>
+
+```
+$ ls Basic_Command/Example/
+hello.txt
+$ cp Basic_Command/Example/hello.txt Basic_Command/Example/hello2.txt
+$ ls Basic_Command/Example/
+hello.txt  hello2.txt
+$
+```
+
+ディレクトリのコピーは、オプションなしだと、できません。  
+「-r」オプションを指定することでディレクトリ内のファイル全てをコピーできます。
+
+</details>
+
+
+<a id="pos9"></a>
+
+## mv
+
+指定したファイルを移動します。
+
+```
+mv Basic_Command/Data/aaa.txt Basic_Command/Example/
+```
+
+<details><summary>実行結果</summary>
+
+```
+$ ls Basic_Command/Data/
+Program  User  aaa.txt
+$ mv Basic_Command/Data/aaa.txt Basic_Command/Example/
+$ ls Basic_Command/Data/
+Program  User
+$ ls Basic_Command/Example/
+aaa.txt  hello.txt  hello2.txt
+$
+```
+
+</details>
+
+<a id="pos10"></a>
+
 ## rm
 
 指定したファイルを削除します。
@@ -297,7 +351,7 @@ $
 
 </details>
 
-<a id="pos9"></a>
+<a id="pos11"></a>
 
 ## rmdir
 
@@ -319,7 +373,7 @@ rmdir: failed to remove 'Basic_Command/Data/': Directory not empty
 
 </details>
 
-<a id="pos10"></a>
+<a id="pos12"></a>
 
 ## man
 
