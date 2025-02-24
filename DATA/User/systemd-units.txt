@@ -1,0 +1,66 @@
+Systemd units are the fundamental building blocks of the
+systemd system and service manager in Linux. They represent
+individual resources or tasks that systemd can manage, such
+as services, devices, mount points, timers, and more. Each
+unit is defined by a configuration file, typically written
+in a simple, declarative syntax, which tells systemd what
+to do with that resource—whether it’s starting a service,
+mounting a filesystem, or scheduling a task. These files
+are usually located in directories like /lib/systemd/system/
+(for system-provided units) or /etc/systemd/system/ (for
+user-customized or overridden units).
+The concept of units allows systemd to abstract and standardize
+the management of diverse system components. Each unit file
+specifies its type through its suffix—for example, .service
+for services, .socket for network sockets, .mount for
+filesystem mounts, and .timer for scheduled tasks. This
+modularity makes it easy to manage dependencies and control
+the order of operations during system boot or runtime.
+A typical unit file contains sections like [Unit], [Service],
+and [Install]. The [Unit] section provides metadata and
+dependency information, such as a description or what other
+units must be started first (via directives like After= or
+Requires=). For instance, a web server unit might specify
+After=network.target to ensure it starts only after the
+network is up. The [Service] section, in a .service file,
+defines how the service starts, stops, or restarts, with options
+like ExecStart= pointing to the command that launches the
+process.
+Systemd supports several unit types, each serving a specific
+purpose. Service units manage daemons or applications, like
+nginx.service for the Nginx web server. Socket units enable
+socket activation, where a service starts only when a
+connection is made to a specified socket, optimizing resource
+use. Mount units handle filesystem mounts, replacing parts
+of the old /etc/fstab functionality, while device units
+correspond to hardware detected by the kernel. Timer units,
+akin to cron jobs, schedule tasks—such as running a backup
+script at midnight.
+Dependencies are a key strength of systemd units. Through
+directives like Wants=, Requires=, or Before=, units can
+specify relationships with others, allowing systemd to build
+a dependency tree. This enables parallel execution: if two
+units have no direct dependency, systemd starts them
+simultaneously, speeding up boot times. For example,
+sshd.service might depend on network-online.target, but
+it can start alongside an unrelated service like cron.service.
+Units can also be instantiated dynamically using templates,
+denoted by a @ symbol (e.g., getty@tty1.service). This
+allows a single template file to spawn multiple instances,
+such as virtual terminal sessions, based on parameters like
+the terminal number. Similarly, target units (ending in
+.target) act as synchronization points, grouping other
+units to define system states like multi-user.target (full
+multi-user mode) or graphical.target (GUI-enabled mode).
+Administrators interact with units via the systemctl command.
+For example, systemctl start apache2.service activates a
+service, while systemctl enable ensures it runs at boot by
+creating symlinks in the appropriate target’s Wants directory.
+The status of a unit can be checked with systemctl status,
+showing whether it’s active, failed, or inactive, along with
+recent logs from journald.
+In essence, systemd units provide a flexible, unified framework
+for managing system resources, replacing disparate legacy
+tools with a consistent approach. They’re designed for
+efficiency and scalability, making systemd a powerful—if
+sometimes complex—tool for modern Linux administration.
