@@ -1,0 +1,71 @@
+Cgroups, short for "control groups," are a Linux kernel
+feature that allow the system to group processes together
+and apply resource limits or monitoring to them as a
+collective unit. Introduced around 2007 by Google engineers
+Paul Menage and Rohit Seth, cgroups were initially designed
+to manage resource allocation for processes in a more
+granular way than traditional Unix mechanisms like nice
+levels or ulimits. Over time, they’ve become a cornerstone
+of modern Linux, underpinning technologies like containers
+(e.g., Docker, LXC) and system management tools like systemd.
+At its core, a cgroup is a way to organize processes into
+hierarchical groups, each of which can have constraints or
+policies applied to it. These constraints control resources
+such as CPU time, memory, disk I/O, network bandwidth, or
+even device access. For example, you could create a cgroup
+that limits a group of processes—like a web server and its
+child processes—to 2GB of RAM or 50% of a CPU core, ensuring
+they don’t overwhelm the system. This isolation and control
+make cgroups invaluable for multi-tenant environments,
+virtualization, and system stability.
+Cgroups work by exposing a virtual filesystem, typically
+mounted at /sys/fs/cgroup, where each resource type
+(called a "subsystem" or "controller") has its own hierarchy.
+Common controllers include cpu, memory, blkio (block
+I/O), and pids (process ID limits). Within these directories,
+you’ll find files that define limits or track usage. For
+instance, in the memory controller, the file
+memory.limit_in_bytes sets a hard memory cap, while
+memory.usage_in_bytes shows current consumption. Processes
+are assigned to a cgroup by writing their PIDs to a tasks
+file (or cgroup.procs for all threads of a process).
+The hierarchical nature of cgroups means that limits cascade
+down from parent groups to children, but child cgroups can
+have stricter rules than their parents. For example, if a
+parent cgroup limits CPU usage to 80%, a child can be
+further restricted to 20%, but not raised to 100%. This
+structure allows fine-tuned control, such as isolating a
+user’s processes under a top-level group while applying
+specific limits to individual applications.
+Systemd integrates deeply with cgroups, using them to manage
+services. When you start a service like nginx.service,
+systemd places its processes into a dedicated cgroup (e.g.,
+/system.slice/nginx.service). This ensures that all spawned
+processes are tracked and can be cleanly terminated when
+the service stops, preventing orphaned processes. You can
+inspect this with tools like systemd-cgtop, which shows
+resource usage by cgroup, or cat /proc/<pid>/cgroup to see
+which cgroup a process belongs to.
+Cgroups come in two versions: v1 and v2. Cgroups v1, the
+original implementation, allowed multiple hierarchies, with
+each controller having its own tree. This flexibility led to
+complexity and inconsistency, so cgroups v2, introduced
+around 2016, unified all controllers into a single hierarchy,
+simplifying management. Modern Linux distributions are
+transitioning to v2, though v1 remains in use for compatibility.
+You can check the version with stat -fc %T /sys/fs/cgroup/—
+cgroup2fs indicates v2.
+In practice, cgroups enable powerful use cases. Containers
+rely on them (along with namespaces) to isolate and limit
+workloads, ensuring one container doesn’t starve others.
+System administrators might use cgroups to cap a memory-hungry
+process, like a backup job, by manually creating a group with
+cgcreate and setting limits via cgset. For example,
+cgset -r memory.limit_in_bytes=512M mygroup restricts
+"mygroup" to 512MB of RAM.
+In summary, cgroups provide a robust mechanism for resource
+management and process isolation in Linux, bridging
+traditional system administration with modern containerized
+environments. They’re a testament to the kernel’s adaptability,
+offering both low-level control and high-level integration
+with tools like systemd.
